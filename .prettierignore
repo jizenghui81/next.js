@@ -13,7 +13,6 @@ lerna.json
 .github/actions/next-stats-action/.work
 .github/actions/issue-validator/index.mjs
 .github/actions/issue-labeler/lib/index.js
-packages/next-swc/crates/**/*
 packages/next-swc/target/**/*
 packages/next-swc/native/**/*
 packages/next-codemod/transforms/__testfixtures__/**/*
