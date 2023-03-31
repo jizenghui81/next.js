@@ -2,7 +2,7 @@ use anyhow::{bail, Result};
 use turbo_binding::{
     turbo::tasks_fs::FileSystemPathVc,
     turbopack::{
-        core::issue::OptionIssueSourceVc;
+        core::issue::{IssueSeverity, OptionIssueSourceVc};
 use turbo_binding::turbopack::core::{
             asset::Asset,
             context::AssetContextVc,
@@ -38,6 +38,7 @@ impl RuntimeEntryVc {
             PlainResolveOriginVc::new(context, path).into(),
             request,
             OptionIssueSourceVc::none(),
+            IssueSeverity::Error.cell(),
         )
         .primary_assets()
         .await?;
