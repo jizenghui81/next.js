@@ -2,7 +2,7 @@ use anyhow::{bail, Result};
 use turbo_binding::turbo::tasks_fs::FileSystemPathVc;
 use turbo_binding::turbopack::core::{
     asset::Asset,
-    chunk::{EvaluatedEntriesVc, EvaluatedEntryVc},
+    chunk::{EvaluatableAssetVc, EvaluatableAssetsVc},
     context::AssetContextVc,
     resolve::{origin::PlainResolveOriginVc, parse::RequestVc},
 };
@@ -12,15 +12,15 @@ use turbo_tasks::ValueToString;
 #[turbo_tasks::value(shared)]
 pub enum RuntimeEntry {
     Request(RequestVc, FileSystemPathVc),
-    Evaluated(EvaluatedEntryVc),
+    Evaluatable(EvaluatableAssetVc),
 }
 
 #[turbo_tasks::value_impl]
 impl RuntimeEntryVc {
     #[turbo_tasks::function]
-    pub async fn resolve_entry(self, context: AssetContextVc) -> Result<EvaluatedEntriesVc> {
+    pub async fn resolve_entry(self, context: AssetContextVc) -> Result<EvaluatableAssetsVc> {
         let (request, path) = match *self.await? {
-            RuntimeEntry::Evaluated(e) => return Ok(EvaluatedEntriesVc::cell(vec![e])),
+            RuntimeEntry::Evaluatable(e) => return Ok(EvaluatableAssetsVc::cell(vec![e])),
             RuntimeEntry::Request(r, path) => (r, path),
         };
 
@@ -30,7 +30,7 @@ impl RuntimeEntryVc {
 
         let mut runtime_entries = Vec::with_capacity(assets.len());
         for asset in &assets {
-            if let Some(entry) = EvaluatedEntryVc::resolve_from(asset).await? {
+            if let Some(entry) = EvaluatableAssetVc::resolve_from(asset).await? {
                 runtime_entries.push(entry);
             } else {
                 bail!(
@@ -40,7 +40,7 @@ impl RuntimeEntryVc {
             }
         }
 
-        Ok(EvaluatedEntriesVc::cell(runtime_entries))
+        Ok(EvaluatableAssetsVc::cell(runtime_entries))
     }
 }
 
@@ -50,7 +50,7 @@ pub struct RuntimeEntries(Vec<RuntimeEntryVc>);
 #[turbo_tasks::value_impl]
 impl RuntimeEntriesVc {
     #[turbo_tasks::function]
-    pub async fn resolve_entries(self, context: AssetContextVc) -> Result<EvaluatedEntriesVc> {
+    pub async fn resolve_entries(self, context: AssetContextVc) -> Result<EvaluatableAssetsVc> {
         let mut runtime_entries = Vec::new();
 
         for reference in &self.await? {
@@ -58,6 +58,6 @@ impl RuntimeEntriesVc {
             runtime_entries.extend(resolved_entries.into_iter());
         }
 
-        Ok(EvaluatedEntriesVc::cell(runtime_entries))
+        Ok(EvaluatableAssetsVc::cell(runtime_entries))
     }
 }

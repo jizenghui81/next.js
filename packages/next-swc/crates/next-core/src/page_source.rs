@@ -5,7 +5,7 @@ use turbo_binding::turbo::tasks_env::{CustomProcessEnvVc, EnvMapVc, ProcessEnvVc
 use turbo_binding::turbo::tasks_fs::{FileContent, FileSystemPathVc};
 use turbo_binding::turbopack::core::{
     asset::AssetVc,
-    chunk::{ChunkingContextVc, EvaluatedEntriesVc},
+    chunk::{ChunkingContextVc, EvaluatableAssetsVc},
     context::{AssetContext, AssetContextVc},
     environment::{EnvironmentIntention, ServerAddrVc},
     reference_type::{EntryReferenceSubType, ReferenceType},
@@ -223,7 +223,7 @@ pub async fn create_page_source(
     let env = CustomProcessEnvVc::new(env, next_config.env()).as_process_env();
 
     let server_runtime_entries = vec![ProcessEnvAssetVc::new(project_path, injected_env).into()];
-    let server_runtime_entries = EvaluatedEntriesVc::cell(server_runtime_entries);
+    let server_runtime_entries = EvaluatableAssetsVc::cell(server_runtime_entries);
 
     let fallback_page = get_fallback_page(
         project_path,
@@ -307,7 +307,7 @@ async fn create_page_source_for_file(
     pages_dir: FileSystemPathVc,
     specificity: SpecificityVc,
     page_asset: AssetVc,
-    runtime_entries: EvaluatedEntriesVc,
+    runtime_entries: EvaluatableAssetsVc,
     fallback_page: DevHtmlAssetVc,
     server_root: FileSystemPathVc,
     server_path: FileSystemPathVc,
@@ -461,7 +461,7 @@ async fn create_not_found_page_source(
     client_context: AssetContextVc,
     pages_dir: FileSystemPathVc,
     page_extensions: StringsVc,
-    runtime_entries: EvaluatedEntriesVc,
+    runtime_entries: EvaluatableAssetsVc,
     fallback_page: DevHtmlAssetVc,
     server_root: FileSystemPathVc,
     intermediate_output_path: FileSystemPathVc,
@@ -556,7 +556,7 @@ async fn create_page_source_for_directory(
     server_data_context: AssetContextVc,
     client_context: AssetContextVc,
     pages_dir: FileSystemPathVc,
-    runtime_entries: EvaluatedEntriesVc,
+    runtime_entries: EvaluatableAssetsVc,
     fallback_page: DevHtmlAssetVc,
     server_root: FileSystemPathVc,
     output_root: FileSystemPathVc,

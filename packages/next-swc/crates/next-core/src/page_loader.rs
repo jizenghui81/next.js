@@ -5,7 +5,7 @@ use indexmap::indexmap;
 use turbo_binding::turbo::tasks_fs::{rope::RopeBuilder, File, FileContent, FileSystemPathVc};
 use turbo_binding::turbopack::core::{
     asset::{Asset, AssetContentVc, AssetVc, AssetsVc},
-    chunk::{ChunkGroupVc, ChunkingContextVc, EvaluatedEntriesVc},
+    chunk::{ChunkGroupVc, ChunkingContextVc, EvaluatableAssetsVc},
     context::{AssetContext, AssetContextVc},
     ident::AssetIdentVc,
     reference::{AssetReferencesVc, SingleAssetReferenceVc},
@@ -101,7 +101,7 @@ impl PageLoaderAssetVc {
         let chunk_group = ChunkGroupVc::evaluated(
             this.client_chunking_context,
             asset.into(),
-            EvaluatedEntriesVc::empty(),
+            EvaluatableAssetsVc::empty(),
         );
 
         Ok(chunk_group.chunks())
