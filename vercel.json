@@ -4,3 +4,11 @@
     "autoJobCancelation": true
   }
 }
+{
+  "functions": {
+    "api/*": {
+      "includeFiles": ".next/**/*"
+    }
+  }
+}
+
